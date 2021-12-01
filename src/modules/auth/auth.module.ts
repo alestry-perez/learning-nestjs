@@ -10,7 +10,6 @@ import { UsersModule } from '../users/users.module';
 import { RefreshToken } from 'src/models/refresh-token.model';
 import { TokensService } from './tokens.service';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
-import { Sequelize } from 'sequelize-typescript';
 
 @Module({
   imports: [
