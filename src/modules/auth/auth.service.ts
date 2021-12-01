@@ -3,13 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth.dto';
 import users from '../users/users';
 
-const refreshTokens: string[] = [];
-
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService) {}
 
-  signinLocal(dto: AuthDto) {
+  signinLocal(@Body() dto: AuthDto) {
     // * retrieve user
     const user = users.find(
       (_user) => _user.email === dto.email && _user.username === dto.username,
