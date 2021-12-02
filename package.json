@@ -32,17 +32,20 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
+    "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "nodemon": "^2.0.15",
     "passport": "^0.5.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.7.1",
     "rand-token": "^1.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sequelize": "^6.12.0-alpha.1",
-    "sequelize-typescript": "^2.1.1"
+    "sequelize-typescript": "^2.1.1",
+    "source-map-support": "^0.5.21"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

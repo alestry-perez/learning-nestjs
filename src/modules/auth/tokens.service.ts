@@ -95,8 +95,8 @@ export class TokensService {
   ): Promise<RefreshTokenPayload> {
     try {
       return this.jwt.verifyAsync(token);
-    } catch (e) {
-      if (e instanceof TokenExpiredError) {
+    } catch (err) {
+      if (err instanceof TokenExpiredError) {
         throw new UnprocessableEntityException('Refresh token expired');
       } else {
         throw new UnprocessableEntityException('Refresh token malformed');
