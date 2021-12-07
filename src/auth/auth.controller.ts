@@ -12,6 +12,12 @@ import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
 import { Request } from 'express';
+import { RtGuard } from 'src/common/guards';
+import {
+  GetCurrentUser,
+  GetCurrentUserId,
+  Public,
+} from 'src/common/decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -22,24 +28,27 @@ export class AuthController {
     return this.authService.signupLocal(dto);
   }
 
+  @Public()
   @Post('local/signin')
   @HttpCode(HttpStatus.OK)
   signinLocal(@Body() dto: AuthDto): Promise<Tokens> {
     return this.authService.signinLocal(dto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Req() req: Request) {
-    const user = req.user;
-    return this.authService.logout(user['id']);
+  logout(@GetCurrentUserId() userId: number) {
+    return this.authService.logout(userId);
   }
 
-  @UseGuards(AuthGuard('jwt-refresh'))
+  @Public()
+  @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refreshTokens() {
-    //return this.authService.refreshTokens();
+  refreshTokens(
+    @GetCurrentUser('refreshToken') refreshToken: string,
+    @GetCurrentUserId() userId: number,
+  ) {
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 }

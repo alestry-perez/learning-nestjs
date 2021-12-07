@@ -13,8 +13,7 @@ export class AuthService {
     const hash = await this.hashData(dto.password);
 
     const newUser = await this.prisma.user.create({
-      // !! look into why 'type any' is working here
-      data: <any>{
+      data: {
         email: dto.email,
         hash,
       },
@@ -31,12 +30,10 @@ export class AuthService {
         email: dto.email,
       },
     });
-    if (!user)
-      throw new ForbiddenException('Access Granted ...... SIKE! ... Try again');
+    if (!user) throw new ForbiddenException('Access Denied');
 
     const passwordMatch = await bcrypt.compare(dto.password, user.hash);
-    if (!user)
-      throw new ForbiddenException('Access Granted ...... SIKE! ... Try again');
+    if (!user) throw new ForbiddenException('Access Denied');
 
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRtHash(user.id, tokens.refresh_token);
@@ -57,7 +54,21 @@ export class AuthService {
     });
   }
 
-  refreshTokens() {}
+  async refreshTokens(userId: number, rt: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied');
+
+    const rtMatch = await bcrypt.compare(rt, user.hashedRt);
+    if (!rtMatch) throw new ForbiddenException('Access Denied');
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
+  }
 
   async updateRtHash(userId: number, rt: string) {
     const hash = await this.hashData(rt);
